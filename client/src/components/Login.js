@@ -59,7 +59,7 @@ const Login = () => {
     <div className="login-page">
       <div className="login-container">
         <div className="header">
-          <h1>Welcome Back!</h1>
+          <h1>Internal Assessment Portal</h1>
           <p>Please enter login details below</p>
         </div>
 

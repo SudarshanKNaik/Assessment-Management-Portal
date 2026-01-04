@@ -1,9 +1,7 @@
 /* Modern Login Page with Glassmorphism */
 .login-page {
   font-family: var(--font-main);
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 50%, #11998e 100%);
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
+  background: linear-gradient(90deg, #11998e 0%, #38ef7d 50%, #6ef5a8 100%);
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -11,12 +9,6 @@
   padding: 20px;
   position: relative;
   overflow: hidden;
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 }
 
 /* Animated Background Shapes */
@@ -63,8 +55,8 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
               0 0 0 1px rgba(255, 255, 255, 0.5) inset;
   width: 100%;
-  max-width: 450px;
-  padding: 48px;
+  max-width: 650px;
+  padding: 56px 64px;
   animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   z-index: 1;
