@@ -34,24 +34,21 @@ const marksSchema = new mongoose.Schema({
   },
   isa1: {
     type: Number,
-    required: true,
+    required: false,
     min: 0,
-    max: 20,
-    default: 0
+    max: 20
   },
   isa2: {
     type: Number,
-    required: true,
+    required: false,
     min: 0,
-    max: 20,
-    default: 0
+    max: 20
   },
   esa: {
     type: Number,
-    required: true,
+    required: false,
     min: 0,
-    max: 60,
-    default: 0
+    max: 60
   },
   total: {
     type: Number,
@@ -88,15 +85,24 @@ marksSchema.index({ usn: 1, courseCode: 1, semester: 1, division: 1 }, { unique:
 // Calculate total and grade based on ISA 1, ISA 2, and ESA
 marksSchema.pre('save', function(next) {
   // Calculate total: ISA 1 (20) + ISA 2 (20) + ESA (60) = 100
-  const isa1Value = typeof this.isa1 === 'number' ? this.isa1 : parseFloat(this.isa1) || 0;
-  const isa2Value = typeof this.isa2 === 'number' ? this.isa2 : parseFloat(this.isa2) || 0;
-  const esaValue = typeof this.esa === 'number' ? this.esa : parseFloat(this.esa) || 0;
+  // Handle undefined, null, or empty values
+  const isa1Value = (this.isa1 !== undefined && this.isa1 !== null) 
+    ? (typeof this.isa1 === 'number' ? this.isa1 : parseFloat(this.isa1) || 0)
+    : 0;
+  const isa2Value = (this.isa2 !== undefined && this.isa2 !== null)
+    ? (typeof this.isa2 === 'number' ? this.isa2 : parseFloat(this.isa2) || 0)
+    : 0;
+  const esaValue = (this.esa !== undefined && this.esa !== null)
+    ? (typeof this.esa === 'number' ? this.esa : parseFloat(this.esa) || 0)
+    : 0;
   
   this.total = isa1Value + isa2Value + esaValue;
   this.marks = this.total; // Keep for backward compatibility
   
-  // Calculate grade based on total
-  if (this.total >= 90) {
+  // Calculate grade based on total (only if total > 0)
+  if (this.total === 0) {
+    this.grade = undefined; // No grade if no marks entered
+  } else if (this.total >= 90) {
     this.grade = 'S';
   } else if (this.total >= 80) {
     this.grade = 'A';

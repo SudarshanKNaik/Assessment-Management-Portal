@@ -96,29 +96,47 @@ const FacultyDashboard = () => {
       return;
     }
 
-    // Validate marks
-    const isa1Num = parseFloat(formData.isa1);
-    const isa2Num = parseFloat(formData.isa2);
-    const esaNum = parseFloat(formData.esa);
-
-    if (isNaN(isa1Num) || isNaN(isa2Num) || isNaN(esaNum)) {
-      alert('Please enter valid numbers for all assessment marks');
+    // Validate marks - at least one must be provided
+    if (!formData.isa1 && !formData.isa2 && !formData.esa) {
+      alert('Please enter at least one assessment mark (ISA 1, ISA 2, or ESA)');
       return;
     }
 
-    if (isa1Num < 0 || isa1Num > 20) {
-      alert('ISA 1 must be between 0 and 20');
-      return;
+    // Validate only provided fields
+    if (formData.isa1) {
+      const isa1Num = parseFloat(formData.isa1);
+      if (isNaN(isa1Num)) {
+        alert('ISA 1 must be a valid number');
+        return;
+      }
+      if (isa1Num < 0 || isa1Num > 20) {
+        alert('ISA 1 must be between 0 and 20');
+        return;
+      }
     }
 
-    if (isa2Num < 0 || isa2Num > 20) {
-      alert('ISA 2 must be between 0 and 20');
-      return;
+    if (formData.isa2) {
+      const isa2Num = parseFloat(formData.isa2);
+      if (isNaN(isa2Num)) {
+        alert('ISA 2 must be a valid number');
+        return;
+      }
+      if (isa2Num < 0 || isa2Num > 20) {
+        alert('ISA 2 must be between 0 and 20');
+        return;
+      }
     }
 
-    if (esaNum < 0 || esaNum > 60) {
-      alert('ESA must be between 0 and 60');
-      return;
+    if (formData.esa) {
+      const esaNum = parseFloat(formData.esa);
+      if (isNaN(esaNum)) {
+        alert('ESA must be a valid number');
+        return;
+      }
+      if (esaNum < 0 || esaNum > 60) {
+        alert('ESA must be between 0 and 60');
+        return;
+      }
     }
 
     setLoading(true);
@@ -128,20 +146,21 @@ const FacultyDashboard = () => {
         usn: formData.usn.trim().toUpperCase(),
         courseCode: filters.courseCode,
         courseName: courses.find(c => c.code === filters.courseCode)?.name || '',
-        isa1: parseFloat(formData.isa1),
-        isa2: parseFloat(formData.isa2),
-        esa: parseFloat(formData.esa),
+        isa1: formData.isa1 ? parseFloat(formData.isa1) : undefined,
+        isa2: formData.isa2 ? parseFloat(formData.isa2) : undefined,
+        esa: formData.esa ? parseFloat(formData.esa) : undefined,
         semester: filters.semester,
         division: filters.division.toUpperCase(),
         department: user.department || 'CSE'
       };
 
       if (editingId) {
-        await axios.put(`/api/marks/update/${editingId}`, { 
-          isa1: payload.isa1, 
-          isa2: payload.isa2, 
-          esa: payload.esa 
-        });
+        // For updates, only send fields that have values
+        const updatePayload = {};
+        if (formData.isa1) updatePayload.isa1 = payload.isa1;
+        if (formData.isa2) updatePayload.isa2 = payload.isa2;
+        if (formData.esa) updatePayload.esa = payload.esa;
+        await axios.put(`/api/marks/update/${editingId}`, updatePayload);
       } else {
         await axios.post('/api/marks/upload', payload);
       }
@@ -372,7 +391,7 @@ const FacultyDashboard = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>ISA 1 (Out of 20)</label>
+                    <label>ISA 1 (Out of 20) <span style={{ color: '#999', fontSize: '12px' }}>Optional</span></label>
                     <input
                       type="number"
                       min="0"
@@ -380,12 +399,11 @@ const FacultyDashboard = () => {
                       step="0.01"
                       value={formData.isa1}
                       onChange={(e) => setFormData({ ...formData, isa1: e.target.value })}
-                      required
-                      placeholder="Enter ISA 1 marks"
+                      placeholder="Enter ISA 1 marks (optional)"
                     />
                   </div>
                   <div className="form-group">
-                    <label>ISA 2 (Out of 20)</label>
+                    <label>ISA 2 (Out of 20) <span style={{ color: '#999', fontSize: '12px' }}>Optional</span></label>
                     <input
                       type="number"
                       min="0"
@@ -393,12 +411,11 @@ const FacultyDashboard = () => {
                       step="0.01"
                       value={formData.isa2}
                       onChange={(e) => setFormData({ ...formData, isa2: e.target.value })}
-                      required
-                      placeholder="Enter ISA 2 marks"
+                      placeholder="Enter ISA 2 marks (optional)"
                     />
                   </div>
                   <div className="form-group">
-                    <label>ESA (Out of 60)</label>
+                    <label>ESA (Out of 60) <span style={{ color: '#999', fontSize: '12px' }}>Optional</span></label>
                     <input
                       type="number"
                       min="0"
@@ -406,20 +423,18 @@ const FacultyDashboard = () => {
                       step="0.01"
                       value={formData.esa}
                       onChange={(e) => setFormData({ ...formData, esa: e.target.value })}
-                      required
-                      placeholder="Enter ESA marks"
+                      placeholder="Enter ESA marks (optional)"
                     />
                   </div>
                   <div className="form-group">
                     <label>Total (Auto-calculated)</label>
                     <input
                       type="text"
-                      value={formData.isa1 && formData.isa2 && formData.esa 
-                        ? (parseFloat(formData.isa1 || 0) + parseFloat(formData.isa2 || 0) + parseFloat(formData.esa || 0)).toFixed(2)
-                        : '0'}
+                      value={(parseFloat(formData.isa1 || 0) + parseFloat(formData.isa2 || 0) + parseFloat(formData.esa || 0)).toFixed(2)}
                       disabled
                       style={{ background: '#f5f5f5' }}
                     />
+                    <small className="help-text">At least one assessment mark must be provided</small>
                   </div>
                   <div className="form-actions">
                     <button type="submit" disabled={loading} className="submit-btn">
@@ -471,22 +486,22 @@ const FacultyDashboard = () => {
                         <td>{student.name}</td>
                         <td>{filters.courseCode}</td>
                         <td>
-                          {mark ? (
-                            `${mark.isa1 || 0}/20`
+                          {mark && (mark.isa1 !== undefined && mark.isa1 !== null) ? (
+                            `${mark.isa1}/20`
                           ) : (
                             <span className="no-marks-text">-</span>
                           )}
                         </td>
                         <td>
-                          {mark ? (
-                            `${mark.isa2 || 0}/20`
+                          {mark && (mark.isa2 !== undefined && mark.isa2 !== null) ? (
+                            `${mark.isa2}/20`
                           ) : (
                             <span className="no-marks-text">-</span>
                           )}
                         </td>
                         <td>
-                          {mark ? (
-                            `${mark.esa || 0}/60`
+                          {mark && (mark.esa !== undefined && mark.esa !== null) ? (
+                            `${mark.esa}/60`
                           ) : (
                             <span className="no-marks-text">-</span>
                           )}
@@ -499,7 +514,7 @@ const FacultyDashboard = () => {
                           )}
                         </td>
                         <td>
-                          {mark ? (
+                          {mark && mark.grade ? (
                             <span className={`grade-badge grade-${mark.grade}`}>
                               {mark.grade}
                             </span>
