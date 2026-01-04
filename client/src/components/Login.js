@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
@@ -9,8 +9,16 @@ const Login = () => {
   const [role, setRole] = useState('student');
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [focused, setFocused] = useState({ username: false, password: false });
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Clear errors when role changes
+    setErrors({});
+    setUsername('');
+    setPassword('');
+  }, [role]);
 
   const validate = () => {
     const newErrors = {};
@@ -48,12 +56,14 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h1>Internal Assessment Portal</h1>
-        <h2>Login</h2>
-        
-        <form onSubmit={handleSubmit}>
+    <div className="login-page">
+      <div className="login-container">
+        <div className="header">
+          <h1>Welcome Back!</h1>
+          <p>Please enter login details below</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
             <label>Role</label>
             <div className="role-selector">
@@ -83,15 +93,15 @@ const Login = () => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              onFocus={() => setFocused({ ...focused, username: true })}
+              onBlur={() => setFocused({ ...focused, username: false })}
               className={errors.username ? 'error' : ''}
               placeholder={role === 'student' ? 'Enter your USN' : 'Enter your Faculty ID'}
+              required
             />
-            {errors.username && <span className="error-message">{errors.username}</span>}
-            <small className="help-text">
-              {role === 'student' 
-                ? 'Use your University Seat Number (USN) as username' 
-                : 'Use your Faculty ID as username'}
-            </small>
+            {errors.username && (
+              <span className="error-message">{errors.username}</span>
+            )}
           </div>
 
           <div className="form-group">
@@ -101,23 +111,41 @@ const Login = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onFocus={() => setFocused({ ...focused, password: true })}
+              onBlur={() => setFocused({ ...focused, password: false })}
               className={errors.password ? 'error' : ''}
+              placeholder="Enter your password"
+              required
             />
-            {errors.password && <span className="error-message">{errors.password}</span>}
+            {errors.password && (
+              <span className="error-message">{errors.password}</span>
+            )}
           </div>
 
-          {errors.submit && <div className="error-message submit-error">{errors.submit}</div>}
+          <div className="forgot-password">
+            <Link to="#" className="forgot-link">Forgot password?</Link>
+          </div>
 
-          <button type="submit" className="submit-btn" disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
+          {errors.submit && (
+            <div className="error-message submit-error">{errors.submit}</div>
+          )}
+
+          <button type="submit" className="sign-in-btn" disabled={loading}>
+            {loading ? (
+              <>
+                <span className="spinner"></span>
+                <span>Signing in...</span>
+              </>
+            ) : (
+              'Sign in'
+            )}
           </button>
 
-          <div className="register-link">
-            <p>Don't have an account? 
-              <Link to="/register/faculty" style={{ marginLeft: '5px', marginRight: '10px' }}>Faculty Registration</Link>
-              <span>|</span>
-              <Link to="/register/student" style={{ marginLeft: '10px' }}>Student Registration</Link>
-            </p>
+          <div className="signup-link">
+            <span>Don't have an account?</span>
+            <Link to={role === 'student' ? '/register/student' : '/register/faculty'} className="signup-link-text">
+              Sign Up
+            </Link>
           </div>
         </form>
       </div>
@@ -126,4 +154,3 @@ const Login = () => {
 };
 
 export default Login;
-

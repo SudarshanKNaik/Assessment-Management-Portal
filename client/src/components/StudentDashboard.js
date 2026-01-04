@@ -70,14 +70,14 @@ const StudentDashboard = () => {
           label: 'Total Marks (out of 100)',
           data: courseTotals,
           backgroundColor: [
-            'rgba(102, 126, 234, 0.8)',
-            'rgba(118, 75, 162, 0.8)',
-            'rgba(54, 162, 235, 0.8)'
+            'rgba(17, 153, 142, 0.8)',
+            'rgba(56, 239, 125, 0.8)',
+            'rgba(34, 197, 94, 0.8)'
           ],
           borderColor: [
-            'rgba(102, 126, 234, 1)',
-            'rgba(118, 75, 162, 1)',
-            'rgba(54, 162, 235, 1)'
+            'rgba(17, 153, 142, 1)',
+            'rgba(56, 239, 125, 1)',
+            'rgba(34, 197, 94, 1)'
           ],
           borderWidth: 2
         }
@@ -98,14 +98,14 @@ const StudentDashboard = () => {
           label: 'Marks Distribution',
           data: [totalISA1, totalISA2, totalESA],
           backgroundColor: [
-            'rgba(102, 126, 234, 0.8)',
-            'rgba(118, 75, 162, 0.8)',
-            'rgba(54, 162, 235, 0.8)'
+            'rgba(17, 153, 142, 0.8)',
+            'rgba(56, 239, 125, 0.8)',
+            'rgba(34, 197, 94, 0.8)'
           ],
           borderColor: [
-            'rgba(102, 126, 234, 1)',
-            'rgba(118, 75, 162, 1)',
-            'rgba(54, 162, 235, 1)'
+            'rgba(17, 153, 142, 1)',
+            'rgba(56, 239, 125, 1)',
+            'rgba(34, 197, 94, 1)'
           ],
           borderWidth: 2
         }

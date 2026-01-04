@@ -125,8 +125,10 @@ const FacultyRegister = () => {
   return (
     <div className="register-container">
       <div className="register-card">
-        <h1>Internal Assessment Portal</h1>
-        <h2>Faculty Registration</h2>
+        <div className="header">
+          <h1>Welcome!</h1>
+          <h2>Create your faculty account</h2>
+        </div>
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
