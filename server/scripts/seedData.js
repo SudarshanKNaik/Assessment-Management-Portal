@@ -19,14 +19,18 @@ const seedData = async () => {
     // await Marks.deleteMany({});
 
     // Create Faculty User
-    const facultyExists = await User.findOne({ username: 'faculty1' });
+    // Faculty ID Format: 2 digits (institution) + 2 letters (department) + 2 digits (year) + 1 letter (role) + 4 digits (ID)
+    // Example: 01CSE20F0001
+    const facultyExists = await User.findOne({ username: '01CSE20F0001' });
     if (!facultyExists) {
       const faculty = new User({
-        username: 'faculty1',
+        username: '01CSE20F0001',
         email: 'faculty@example.com',
         password: 'password123',
         role: 'faculty',
-        name: 'Dr. John Smith'
+        facultyId: '01CSE20F0001',
+        name: 'Dr. John Smith',
+        department: 'CSE'
       });
       await faculty.save();
       console.log('Faculty user created:', faculty.username);
@@ -35,30 +39,44 @@ const seedData = async () => {
     }
 
     // Create Student Users
+    // USN Format: 2 digits (institution) + 2 letters (category) + 2 digits (year) + 3 letters (program) + 3 digits (ID)
+    // Example: 01AB20CSE001
     const students = [
       {
-        username: 'student1',
+        username: '01AB20CSE001',
         email: 'student1@example.com',
         password: 'password123',
         role: 'student',
-        studentId: 'STU001',
-        name: 'Alice Johnson'
+        usn: '01AB20CSE001',
+        name: 'Alice Johnson',
+        department: 'CSE',
+        semester: '5',
+        division: 'C',
+        academicYear: '2020-2024'
       },
       {
-        username: 'student2',
+        username: '01AB20CSE002',
         email: 'student2@example.com',
         password: 'password123',
         role: 'student',
-        studentId: 'STU002',
-        name: 'Bob Williams'
+        usn: '01AB20CSE002',
+        name: 'Bob Williams',
+        department: 'CSE',
+        semester: '5',
+        division: 'C',
+        academicYear: '2020-2024'
       },
       {
-        username: 'student3',
+        username: '01AB20CSE003',
         email: 'student3@example.com',
         password: 'password123',
         role: 'student',
-        studentId: 'STU003',
-        name: 'Charlie Brown'
+        usn: '01AB20CSE003',
+        name: 'Charlie Brown',
+        department: 'CSE',
+        semester: '5',
+        division: 'C',
+        academicYear: '2020-2024'
       }
     ];
 
@@ -75,15 +93,15 @@ const seedData = async () => {
 
     // Create sample marks
     const sampleMarks = [
-      { studentId: 'STU001', courseCode: 'CS101', courseName: 'Introduction to Computer Science', marks: 85 },
-      { studentId: 'STU001', courseCode: 'CS102', courseName: 'Data Structures and Algorithms', marks: 92 },
-      { studentId: 'STU001', courseCode: 'CS103', courseName: 'Database Management Systems', marks: 78 },
-      { studentId: 'STU002', courseCode: 'CS101', courseName: 'Introduction to Computer Science', marks: 75 },
-      { studentId: 'STU002', courseCode: 'CS102', courseName: 'Data Structures and Algorithms', marks: 88 },
-      { studentId: 'STU002', courseCode: 'CS103', courseName: 'Database Management Systems', marks: 82 },
-      { studentId: 'STU003', courseCode: 'CS101', courseName: 'Introduction to Computer Science', marks: 95 },
-      { studentId: 'STU003', courseCode: 'CS102', courseName: 'Data Structures and Algorithms', marks: 90 },
-      { studentId: 'STU003', courseCode: 'CS103', courseName: 'Database Management Systems', marks: 87 },
+      { studentId: '01AB20CSE001', usn: '01AB20CSE001', courseCode: '25ECSC301', courseName: 'Software Engineering', marks: 85, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE001', usn: '01AB20CSE001', courseCode: '24ECSP304', courseName: 'Web Technologies Lab', marks: 92, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE001', usn: '01AB20CSE001', courseCode: '24ECSC303', courseName: 'Computer Networks', marks: 78, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE002', usn: '01AB20CSE002', courseCode: '25ECSC301', courseName: 'Software Engineering', marks: 75, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE002', usn: '01AB20CSE002', courseCode: '24ECSP304', courseName: 'Web Technologies Lab', marks: 88, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE002', usn: '01AB20CSE002', courseCode: '24ECSC303', courseName: 'Computer Networks', marks: 82, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE003', usn: '01AB20CSE003', courseCode: '25ECSC301', courseName: 'Software Engineering', marks: 95, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE003', usn: '01AB20CSE003', courseCode: '24ECSP304', courseName: 'Web Technologies Lab', marks: 90, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE003', usn: '01AB20CSE003', courseCode: '24ECSC303', courseName: 'Computer Networks', marks: 87, semester: '5', division: 'C', department: 'CSE' },
     ];
 
     for (const markData of sampleMarks) {
@@ -99,8 +117,8 @@ const seedData = async () => {
 
     console.log('\nSeed data completed successfully!');
     console.log('\nTest Credentials:');
-    console.log('Faculty - Username: faculty1, Password: password123');
-    console.log('Student - Username: student1, Password: password123');
+    console.log('Faculty - Username: 01CSE20F0001, Password: password123');
+    console.log('Student - Username: 01AB20CSE001, Password: password123');
     
     await mongoose.connection.close();
     process.exit(0);

@@ -18,6 +18,13 @@ const FacultyRegister = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  // Faculty ID Format: 2 digits (institution) + 2 chars (department) + 2 digits (year) + 1 char (role) + 4 digits (faculty ID)
+  // Example: 1RVCSE20F0001
+  const validateFacultyID = (facultyId) => {
+    const facultyIdPattern = /^\d{2}[A-Z]{2}\d{2}[A-Z]\d{4}$/;
+    return facultyIdPattern.test(facultyId.toUpperCase());
+  };
+
   const validate = () => {
     const newErrors = {};
 
@@ -27,6 +34,13 @@ const FacultyRegister = () => {
 
     if (!formData.facultyId.trim()) {
       newErrors.facultyId = 'Faculty ID is required';
+    } else {
+      const facultyIdUpper = formData.facultyId.toUpperCase().trim();
+      if (facultyIdUpper.length !== 11) {
+        newErrors.facultyId = 'Faculty ID must be exactly 11 characters';
+      } else if (!validateFacultyID(facultyIdUpper)) {
+        newErrors.facultyId = 'Invalid Faculty ID format. Format: 2 digits + 2 letters + 2 digits + 1 letter + 4 digits (e.g., 01CSE20F0001)';
+      }
     }
 
     if (!formData.email.trim()) {
@@ -68,7 +82,8 @@ const FacultyRegister = () => {
       const payload = {
         ...registerData,
         role: 'faculty',
-        username: formData.facultyId // Use facultyId as username
+        facultyId: formData.facultyId.toUpperCase().trim(), // Ensure Faculty ID is uppercase
+        username: formData.facultyId.toUpperCase().trim() // Use facultyId as username
       };
 
       await axios.post('/api/auth/register', payload);
@@ -92,9 +107,11 @@ const FacultyRegister = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // Convert Faculty ID to uppercase as user types
+    const processedValue = name === 'facultyId' ? value.toUpperCase() : value;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: processedValue
     }));
     // Clear error for this field when user starts typing
     if (errors[name]) {
@@ -135,9 +152,14 @@ const FacultyRegister = () => {
               value={formData.facultyId}
               onChange={handleChange}
               className={errors.facultyId ? 'error' : ''}
-              placeholder="Enter your faculty ID"
+              placeholder="e.g., 01CSE20F0001"
+              maxLength={11}
+              style={{ textTransform: 'uppercase' }}
             />
             {errors.facultyId && <span className="error-message">{errors.facultyId}</span>}
+            <small className="help-text">
+              Format: 2 digits (institution) + 2 letters (department) + 2 digits (year) + 1 letter (role) + 4 digits (ID)
+            </small>
           </div>
 
           <div className="form-group">

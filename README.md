@@ -15,7 +15,7 @@ A web application for managing internal assessment marks for faculty and student
    - View class statistics including:
      - Class average
      - Number of S, A, B, C, D, and F grades
-   - Support for three courses (CS101, CS102, CS103)
+   - Support for three courses (25ECSC301, 24ECSP304, 24ECSC303)
 
 3. **Student Features**
    - View only their own marks
@@ -78,7 +78,7 @@ You can create users through the registration endpoint or directly in MongoDB. H
 - `POST /api/auth/login` - Login user
 
 ### Marks (Faculty Only)
-- `GET /api/marks/all?courseCode=CS101` - Get all marks for a course
+- `GET /api/marks/all?courseCode=25ECSC301` - Get all marks for a course
 - `POST /api/marks/upload` - Upload new marks
 - `PUT /api/marks/update/:id` - Update existing marks
 - `DELETE /api/marks/delete/:id` - Delete marks
@@ -101,9 +101,9 @@ You can create users through the registration endpoint or directly in MongoDB. H
 
 ## Course Codes
 
-- CS101 - Introduction to Computer Science
-- CS102 - Data Structures and Algorithms
-- CS103 - Database Management Systems
+- 25ECSC301 - Software Engineering
+- 24ECSP304 - Web Technologies Lab
+- 24ECSC303 - Computer Networks
 
 ## Project Structure
 

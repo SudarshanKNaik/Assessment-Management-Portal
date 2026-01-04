@@ -13,7 +13,7 @@ const marksSchema = new mongoose.Schema({
   courseCode: {
     type: String,
     required: true,
-    enum: ['CS101', 'CS102', 'CS103']
+    enum: ['25ECSC301', '24ECSP304', '24ECSC303']
   },
   courseName: {
     type: String,

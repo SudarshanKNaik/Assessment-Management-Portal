@@ -25,6 +25,13 @@ const StudentRegister = () => {
   const divisions = ['A', 'B', 'C'];
   const academicYears = ['2021-2022', '2022-2023', '2023-2024', '2024-2025', '2025-2026'];
 
+  // USN Format: 2 digits (institution) + 2 chars (admission category) + 2 digits (year) + 3 chars (program) + 3 digits (student ID)
+  // Example: 1RV20CS001
+  const validateUSN = (usn) => {
+    const usnPattern = /^\d{2}[A-Z]{2}\d{2}[A-Z]{3}\d{3}$/;
+    return usnPattern.test(usn.toUpperCase());
+  };
+
   const validate = () => {
     const newErrors = {};
 
@@ -34,6 +41,13 @@ const StudentRegister = () => {
 
     if (!formData.usn.trim()) {
       newErrors.usn = 'USN is required';
+    } else {
+      const usnUpper = formData.usn.toUpperCase().trim();
+      if (usnUpper.length !== 12) {
+        newErrors.usn = 'USN must be exactly 12 characters';
+      } else if (!validateUSN(usnUpper)) {
+        newErrors.usn = 'Invalid USN format. Format: 2 digits + 2 letters + 2 digits + 3 letters + 3 digits (e.g., 01AB20CSE001)';
+      }
     }
 
     if (!formData.email.trim()) {
@@ -87,7 +101,8 @@ const StudentRegister = () => {
       const payload = {
         ...registerData,
         role: 'student',
-        username: formData.usn // Use USN as username
+        usn: formData.usn.toUpperCase().trim(), // Ensure USN is uppercase
+        username: formData.usn.toUpperCase().trim() // Use USN as username
       };
 
       await axios.post('/api/auth/register', payload);
@@ -111,9 +126,11 @@ const StudentRegister = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // Convert USN to uppercase as user types
+    const processedValue = name === 'usn' ? value.toUpperCase() : value;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: processedValue
     }));
     // Clear error for this field when user starts typing
     if (errors[name]) {
@@ -154,9 +171,14 @@ const StudentRegister = () => {
               value={formData.usn}
               onChange={handleChange}
               className={errors.usn ? 'error' : ''}
-              placeholder="Enter your USN"
+              placeholder="e.g., 01AB20CSE001"
+              maxLength={12}
+              style={{ textTransform: 'uppercase' }}
             />
             {errors.usn && <span className="error-message">{errors.usn}</span>}
+            <small className="help-text">
+              Format: 2 digits (institution) + 2 letters (category) + 2 digits (year) + 3 letters (program) + 3 digits (ID)
+            </small>
           </div>
 
           <div className="form-group">

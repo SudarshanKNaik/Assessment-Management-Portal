@@ -10,7 +10,7 @@ router.get('/course/:courseCode', auth, isFaculty, async (req, res) => {
     const { courseCode } = req.params;
     const { division, semester } = req.query;
     
-    const validCourses = ['CS101', 'CS102', 'CS103'];
+    const validCourses = ['25ECSC301', '24ECSP304', '24ECSC303'];
     if (!validCourses.includes(courseCode)) {
       return res.status(400).json({ message: 'Invalid course code' });
     }

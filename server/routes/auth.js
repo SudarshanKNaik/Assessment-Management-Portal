@@ -34,11 +34,23 @@ router.post('/register', async (req, res) => {
       if (!usn || !semester || !division || !academicYear) {
         return res.status(400).json({ message: 'Student: USN, Semester, Division, and Academic Year are required' });
       }
+      // Validate USN format: 2 digits + 2 letters + 2 digits + 3 letters + 3 digits = 12 characters
+      const usnPattern = /^\d{2}[A-Z]{2}\d{2}[A-Z]{3}\d{3}$/;
+      const usnUpper = usn.toUpperCase().trim();
+      if (usnUpper.length !== 12 || !usnPattern.test(usnUpper)) {
+        return res.status(400).json({ message: 'Invalid USN format. Format: 2 digits + 2 letters + 2 digits + 3 letters + 3 digits (e.g., 01AB20CSE001)' });
+      }
     }
 
     if (role === 'faculty') {
       if (!facultyId) {
         return res.status(400).json({ message: 'Faculty: Faculty ID is required' });
+      }
+      // Validate Faculty ID format: 2 digits + 2 letters + 2 digits + 1 letter + 4 digits = 11 characters
+      const facultyIdPattern = /^\d{2}[A-Z]{2}\d{2}[A-Z]\d{4}$/;
+      const facultyIdUpper = facultyId.toUpperCase().trim();
+      if (facultyIdUpper.length !== 11 || !facultyIdPattern.test(facultyIdUpper)) {
+        return res.status(400).json({ message: 'Invalid Faculty ID format. Format: 2 digits + 2 letters + 2 digits + 1 letter + 4 digits (e.g., 01CSE20F0001)' });
       }
     }
 
@@ -70,14 +82,14 @@ router.post('/register', async (req, res) => {
     };
 
     if (role === 'student') {
-      userData.usn = usn;
+      userData.usn = usn.toUpperCase().trim();
       userData.semester = semester;
       userData.division = division;
       userData.academicYear = academicYear;
     }
 
     if (role === 'faculty') {
-      userData.facultyId = facultyId;
+      userData.facultyId = facultyId.toUpperCase().trim();
       // Course, semester, and division are not required during registration
       // Faculty can teach multiple courses/divisions/semesters
     }

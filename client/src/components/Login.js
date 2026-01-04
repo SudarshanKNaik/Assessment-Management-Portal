@@ -75,15 +75,23 @@ const Login = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">
+              {role === 'student' ? 'USN' : 'Faculty ID'}
+            </label>
             <input
               type="text"
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className={errors.username ? 'error' : ''}
+              placeholder={role === 'student' ? 'Enter your USN' : 'Enter your Faculty ID'}
             />
             {errors.username && <span className="error-message">{errors.username}</span>}
+            <small className="help-text">
+              {role === 'student' 
+                ? 'Use your University Seat Number (USN) as username' 
+                : 'Use your Faculty ID as username'}
+            </small>
           </div>
 
           <div className="form-group">

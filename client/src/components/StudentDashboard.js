@@ -24,9 +24,9 @@ const StudentDashboard = () => {
   };
 
   const courses = [
-    { code: 'CS101', name: 'Introduction to Computer Science' },
-    { code: 'CS102', name: 'Data Structures and Algorithms' },
-    { code: 'CS103', name: 'Database Management Systems' }
+    { code: '25ECSC301', name: 'Software Engineering' },
+    { code: '24ECSP304', name: 'Web Technologies Lab' },
+    { code: '24ECSC303', name: 'Computer Networks' }
   ];
 
   const getCourseMarks = (courseCode) => {

@@ -49,7 +49,7 @@ router.post('/upload', auth, isFaculty, async (req, res) => {
       return res.status(400).json({ message: 'Marks must be between 0 and 100' });
     }
 
-    const validCourses = ['CS101', 'CS102', 'CS103'];
+    const validCourses = ['25ECSC301', '24ECSP304', '24ECSC303'];
     if (!validCourses.includes(courseCode)) {
       return res.status(400).json({ message: 'Invalid course code' });
     }
