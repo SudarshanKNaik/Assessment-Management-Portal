@@ -1,0 +1,216 @@
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+import './Register.css';
+
+const FacultyRegister = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    facultyId: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    department: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Full Name is required';
+    }
+
+    if (!formData.facultyId.trim()) {
+      newErrors.facultyId = 'Faculty ID is required';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password';
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+
+    if (!formData.department.trim()) {
+      newErrors.department = 'Department is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validate()) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { confirmPassword, ...registerData } = formData;
+      const payload = {
+        ...registerData,
+        role: 'faculty',
+        username: formData.facultyId // Use facultyId as username
+      };
+
+      await axios.post('/api/auth/register', payload);
+      
+      // Auto-login after successful registration
+      const loginResult = await login(formData.facultyId, formData.password);
+      
+      if (loginResult.success) {
+        navigate('/faculty-dashboard');
+      } else {
+        setErrors({ submit: 'Registration successful but login failed. Please try logging in.' });
+      }
+    } catch (error) {
+      setErrors({ 
+        submit: error.response?.data?.message || 'Registration failed. Please try again.' 
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  return (
+    <div className="register-container">
+      <div className="register-card">
+        <h1>Internal Assessment Portal</h1>
+        <h2>Faculty Registration</h2>
+        
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="name">Full Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className={errors.name ? 'error' : ''}
+              placeholder="Enter your full name"
+            />
+            {errors.name && <span className="error-message">{errors.name}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="facultyId">Faculty ID</label>
+            <input
+              type="text"
+              id="facultyId"
+              name="facultyId"
+              value={formData.facultyId}
+              onChange={handleChange}
+              className={errors.facultyId ? 'error' : ''}
+              placeholder="Enter your faculty ID"
+            />
+            {errors.facultyId && <span className="error-message">{errors.facultyId}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className={errors.email ? 'error' : ''}
+              placeholder="Enter your email"
+            />
+            {errors.email && <span className="error-message">{errors.email}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className={errors.password ? 'error' : ''}
+              placeholder="Create a password (min. 6 characters)"
+            />
+            {errors.password && <span className="error-message">{errors.password}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className={errors.confirmPassword ? 'error' : ''}
+              placeholder="Confirm your password"
+            />
+            {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="department">Department</label>
+            <input
+              type="text"
+              id="department"
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+              className={errors.department ? 'error' : ''}
+              placeholder="Enter your department"
+            />
+            {errors.department && <span className="error-message">{errors.department}</span>}
+          </div>
+
+          {errors.submit && <div className="error-message submit-error">{errors.submit}</div>}
+
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? 'Registering...' : 'Register'}
+          </button>
+
+          <div className="login-link">
+            <p>Already have an account? <Link to="/">Login here</Link></p>
+            <p>Are you a student? <Link to="/register/student">Student Registration</Link></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default FacultyRegister;
+
