@@ -68,9 +68,23 @@ const StudentDashboard = () => {
                   <div className="card-body">
                     {courseMarks ? (
                       <>
+                        <div className="marks-breakdown">
+                          <div className="breakdown-item">
+                            <span className="breakdown-label">ISA 1:</span>
+                            <span className="breakdown-value">{courseMarks.isa1 || 0}/20</span>
+                          </div>
+                          <div className="breakdown-item">
+                            <span className="breakdown-label">ISA 2:</span>
+                            <span className="breakdown-value">{courseMarks.isa2 || 0}/20</span>
+                          </div>
+                          <div className="breakdown-item">
+                            <span className="breakdown-label">ESA:</span>
+                            <span className="breakdown-value">{courseMarks.esa || 0}/60</span>
+                          </div>
+                        </div>
                         <div className="marks-display">
                           <div className="marks-value">
-                            <span className="marks-number">{courseMarks.marks}</span>
+                            <span className="marks-number">{courseMarks.total || courseMarks.marks || 0}</span>
                             <span className="marks-label">/ 100</span>
                           </div>
                           <div className={`grade-badge grade-${courseMarks.grade}`}>
@@ -117,7 +131,7 @@ const StudentDashboard = () => {
               <div className="summary-item">
                 <span className="summary-label">Average Marks:</span>
                 <span className="summary-value">
-                  {(marks.reduce((sum, m) => sum + m.marks, 0) / marks.length).toFixed(2)}%
+                  {(marks.reduce((sum, m) => sum + (m.total || m.marks || 0), 0) / marks.length).toFixed(2)}%
                 </span>
               </div>
             </div>

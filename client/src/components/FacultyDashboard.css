@@ -411,16 +411,29 @@
 }
 
 .marks-table th {
-  padding: 15px;
-  text-align: left;
+  padding: 12px 8px;
+  text-align: center;
   font-weight: 600;
   color: #333;
   border-bottom: 2px solid #ddd;
+  font-size: 14px;
+}
+
+.marks-table th:first-child,
+.marks-table td:first-child {
+  text-align: left;
+  padding-left: 15px;
+}
+
+.marks-table th:nth-child(2),
+.marks-table td:nth-child(2) {
+  text-align: left;
 }
 
 .marks-table td {
-  padding: 15px;
+  padding: 12px 8px;
   border-bottom: 1px solid #eee;
+  text-align: center;
 }
 
 .marks-table tbody tr:hover {

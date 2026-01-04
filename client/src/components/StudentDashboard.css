@@ -117,6 +117,34 @@
   padding: 25px;
 }
 
+.marks-breakdown {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.breakdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.breakdown-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.breakdown-value {
+  font-size: 18px;
+  color: #667eea;
+  font-weight: 700;
+}
+
 .marks-display {
   text-align: center;
   margin-bottom: 20px;

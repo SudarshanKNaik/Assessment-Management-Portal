@@ -92,16 +92,17 @@ const seedData = async () => {
     }
 
     // Create sample marks
+    // Format: ISA 1 (20) + ISA 2 (20) + ESA (60) = Total (100)
     const sampleMarks = [
-      { studentId: '01AB20CSE001', usn: '01AB20CSE001', courseCode: '25ECSC301', courseName: 'Software Engineering', marks: 85, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE001', usn: '01AB20CSE001', courseCode: '24ECSP304', courseName: 'Web Technologies Lab', marks: 92, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE001', usn: '01AB20CSE001', courseCode: '24ECSC303', courseName: 'Computer Networks', marks: 78, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE002', usn: '01AB20CSE002', courseCode: '25ECSC301', courseName: 'Software Engineering', marks: 75, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE002', usn: '01AB20CSE002', courseCode: '24ECSP304', courseName: 'Web Technologies Lab', marks: 88, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE002', usn: '01AB20CSE002', courseCode: '24ECSC303', courseName: 'Computer Networks', marks: 82, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE003', usn: '01AB20CSE003', courseCode: '25ECSC301', courseName: 'Software Engineering', marks: 95, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE003', usn: '01AB20CSE003', courseCode: '24ECSP304', courseName: 'Web Technologies Lab', marks: 90, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE003', usn: '01AB20CSE003', courseCode: '24ECSC303', courseName: 'Computer Networks', marks: 87, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE001', usn: '01AB20CSE001', courseCode: '25ECSC301', courseName: 'Software Engineering', isa1: 18, isa2: 17, esa: 50, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE001', usn: '01AB20CSE001', courseCode: '24ECSP304', courseName: 'Web Technologies Lab', isa1: 20, isa2: 19, esa: 53, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE001', usn: '01AB20CSE001', courseCode: '24ECSC303', courseName: 'Computer Networks', isa1: 16, isa2: 15, esa: 47, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE002', usn: '01AB20CSE002', courseCode: '25ECSC301', courseName: 'Software Engineering', isa1: 15, isa2: 14, esa: 46, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE002', usn: '01AB20CSE002', courseCode: '24ECSP304', courseName: 'Web Technologies Lab', isa1: 17, isa2: 18, esa: 53, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE002', usn: '01AB20CSE002', courseCode: '24ECSC303', courseName: 'Computer Networks', isa1: 16, isa2: 16, esa: 50, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE003', usn: '01AB20CSE003', courseCode: '25ECSC301', courseName: 'Software Engineering', isa1: 19, isa2: 20, esa: 56, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE003', usn: '01AB20CSE003', courseCode: '24ECSP304', courseName: 'Web Technologies Lab', isa1: 18, isa2: 19, esa: 53, semester: '5', division: 'C', department: 'CSE' },
+      { studentId: '01AB20CSE003', usn: '01AB20CSE003', courseCode: '24ECSC303', courseName: 'Computer Networks', isa1: 17, isa2: 18, esa: 52, semester: '5', division: 'C', department: 'CSE' },
     ];
 
     for (const markData of sampleMarks) {

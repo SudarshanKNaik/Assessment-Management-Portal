@@ -13,7 +13,9 @@ const FacultyDashboard = () => {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     usn: '',
-    marks: ''
+    isa1: '',
+    isa2: '',
+    esa: ''
   });
   const [editingId, setEditingId] = useState(null);
   const [filters, setFilters] = useState({
@@ -94,33 +96,66 @@ const FacultyDashboard = () => {
       return;
     }
 
+    // Validate marks
+    const isa1Num = parseFloat(formData.isa1);
+    const isa2Num = parseFloat(formData.isa2);
+    const esaNum = parseFloat(formData.esa);
+
+    if (isNaN(isa1Num) || isNaN(isa2Num) || isNaN(esaNum)) {
+      alert('Please enter valid numbers for all assessment marks');
+      return;
+    }
+
+    if (isa1Num < 0 || isa1Num > 20) {
+      alert('ISA 1 must be between 0 and 20');
+      return;
+    }
+
+    if (isa2Num < 0 || isa2Num > 20) {
+      alert('ISA 2 must be between 0 and 20');
+      return;
+    }
+
+    if (esaNum < 0 || esaNum > 60) {
+      alert('ESA must be between 0 and 60');
+      return;
+    }
+
     setLoading(true);
 
     try {
       const payload = {
-        usn: formData.usn,
+        usn: formData.usn.trim().toUpperCase(),
         courseCode: filters.courseCode,
         courseName: courses.find(c => c.code === filters.courseCode)?.name || '',
-        marks: parseFloat(formData.marks),
+        isa1: parseFloat(formData.isa1),
+        isa2: parseFloat(formData.isa2),
+        esa: parseFloat(formData.esa),
         semester: filters.semester,
-        division: filters.division,
-        department: user.department
+        division: filters.division.toUpperCase(),
+        department: user.department || 'CSE'
       };
 
       if (editingId) {
-        await axios.put(`/api/marks/update/${editingId}`, { marks: payload.marks });
+        await axios.put(`/api/marks/update/${editingId}`, { 
+          isa1: payload.isa1, 
+          isa2: payload.isa2, 
+          esa: payload.esa 
+        });
       } else {
         await axios.post('/api/marks/upload', payload);
       }
 
       setShowForm(false);
-      setFormData({ usn: '', marks: '' });
+      setFormData({ usn: '', isa1: '', isa2: '', esa: '' });
       setEditingId(null);
       fetchMarks();
       fetchStatistics();
       fetchStudents();
     } catch (error) {
-      alert(error.response?.data?.message || 'Error saving marks');
+      console.error('Error saving marks:', error);
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || 'Error saving marks. Please check the console for details.';
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -129,7 +164,9 @@ const FacultyDashboard = () => {
   const handleEdit = (mark) => {
     setFormData({
       usn: mark.usn,
-      marks: mark.marks.toString()
+      isa1: (mark.isa1 || 0).toString(),
+      isa2: (mark.isa2 || 0).toString(),
+      esa: (mark.esa || 0).toString()
     });
     setEditingId(mark._id);
     setShowForm(true);
@@ -289,7 +326,7 @@ const FacultyDashboard = () => {
               <div className="controls">
                 <button onClick={() => {
                   setShowForm(true);
-                  setFormData({ usn: '', marks: '' });
+                  setFormData({ usn: '', isa1: '', isa2: '', esa: '' });
                   setEditingId(null);
                 }} className="add-btn">
                   + Add Marks
@@ -335,15 +372,53 @@ const FacultyDashboard = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Marks (0-100)</label>
+                    <label>ISA 1 (Out of 20)</label>
                     <input
                       type="number"
                       min="0"
-                      max="100"
+                      max="20"
                       step="0.01"
-                      value={formData.marks}
-                      onChange={(e) => setFormData({ ...formData, marks: e.target.value })}
+                      value={formData.isa1}
+                      onChange={(e) => setFormData({ ...formData, isa1: e.target.value })}
                       required
+                      placeholder="Enter ISA 1 marks"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>ISA 2 (Out of 20)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      step="0.01"
+                      value={formData.isa2}
+                      onChange={(e) => setFormData({ ...formData, isa2: e.target.value })}
+                      required
+                      placeholder="Enter ISA 2 marks"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>ESA (Out of 60)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="60"
+                      step="0.01"
+                      value={formData.esa}
+                      onChange={(e) => setFormData({ ...formData, esa: e.target.value })}
+                      required
+                      placeholder="Enter ESA marks"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Total (Auto-calculated)</label>
+                    <input
+                      type="text"
+                      value={formData.isa1 && formData.isa2 && formData.esa 
+                        ? (parseFloat(formData.isa1 || 0) + parseFloat(formData.isa2 || 0) + parseFloat(formData.esa || 0)).toFixed(2)
+                        : '0'}
+                      disabled
+                      style={{ background: '#f5f5f5' }}
                     />
                   </div>
                   <div className="form-actions">
@@ -354,7 +429,7 @@ const FacultyDashboard = () => {
                       type="button"
                       onClick={() => {
                         setShowForm(false);
-                        setFormData({ usn: '', marks: '' });
+                        setFormData({ usn: '', isa1: '', isa2: '', esa: '' });
                         setEditingId(null);
                       }}
                       className="cancel-btn"
@@ -374,7 +449,10 @@ const FacultyDashboard = () => {
                   <th>USN</th>
                   <th>Name</th>
                   <th>Course</th>
-                  <th>Marks</th>
+                  <th>ISA 1</th>
+                  <th>ISA 2</th>
+                  <th>ESA</th>
+                  <th>Total</th>
                   <th>Grade</th>
                   <th>Actions</th>
                 </tr>
@@ -382,7 +460,7 @@ const FacultyDashboard = () => {
               <tbody>
                 {students.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="no-data">No students found for Division {filters.division} and Semester {filters.semester}</td>
+                    <td colSpan="9" className="no-data">No students found for Division {filters.division} and Semester {filters.semester}</td>
                   </tr>
                 ) : (
                   students.map(student => {
@@ -394,7 +472,28 @@ const FacultyDashboard = () => {
                         <td>{filters.courseCode}</td>
                         <td>
                           {mark ? (
-                            mark.marks
+                            `${mark.isa1 || 0}/20`
+                          ) : (
+                            <span className="no-marks-text">-</span>
+                          )}
+                        </td>
+                        <td>
+                          {mark ? (
+                            `${mark.isa2 || 0}/20`
+                          ) : (
+                            <span className="no-marks-text">-</span>
+                          )}
+                        </td>
+                        <td>
+                          {mark ? (
+                            `${mark.esa || 0}/60`
+                          ) : (
+                            <span className="no-marks-text">-</span>
+                          )}
+                        </td>
+                        <td>
+                          {mark ? (
+                            <strong>{mark.total || mark.marks || 0}/100</strong>
                           ) : (
                             <span className="no-marks-text">-</span>
                           )}
@@ -420,11 +519,11 @@ const FacultyDashboard = () => {
                             </>
                           ) : (
                             <button 
-                              onClick={() => {
-                                setFormData({ usn: student.usn, marks: '' });
-                                setEditingId(null);
-                                setShowForm(true);
-                              }} 
+                      onClick={() => {
+                        setFormData({ usn: student.usn, isa1: '', isa2: '', esa: '' });
+                        setEditingId(null);
+                        setShowForm(true);
+                      }}
                               className="add-marks-btn"
                             >
                               Add Marks

@@ -38,7 +38,7 @@ router.get('/course/:courseCode', auth, isFaculty, async (req, res) => {
     // Calculate average only from students who have marks
     let average = 0;
     if (marks.length > 0) {
-      const totalMarks = marks.reduce((sum, m) => sum + m.marks, 0);
+      const totalMarks = marks.reduce((sum, m) => sum + (m.total || m.marks || 0), 0);
       average = parseFloat((totalMarks / marks.length).toFixed(2));
     }
 

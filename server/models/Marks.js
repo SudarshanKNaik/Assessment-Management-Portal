@@ -32,16 +32,43 @@ const marksSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  marks: {
+  isa1: {
     type: Number,
     required: true,
+    min: 0,
+    max: 20,
+    default: 0
+  },
+  isa2: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 20,
+    default: 0
+  },
+  esa: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 60,
+    default: 0
+  },
+  total: {
+    type: Number,
+    required: false, // Will be calculated by pre-save hook
+    min: 0,
+    max: 100
+  },
+  marks: {
+    type: Number,
+    required: false, // Keep for backward compatibility, will be same as total
     min: 0,
     max: 100
   },
   grade: {
     type: String,
     enum: ['S', 'A', 'B', 'C', 'D', 'F'],
-    required: true
+    required: false // Will be set by pre-save hook
   },
   assessmentType: {
     type: String,
@@ -58,17 +85,26 @@ const marksSchema = new mongoose.Schema({
 // Index for efficient queries
 marksSchema.index({ usn: 1, courseCode: 1, semester: 1, division: 1 }, { unique: true });
 
-// Calculate grade based on marks
+// Calculate total and grade based on ISA 1, ISA 2, and ESA
 marksSchema.pre('save', function(next) {
-  if (this.marks >= 90) {
+  // Calculate total: ISA 1 (20) + ISA 2 (20) + ESA (60) = 100
+  const isa1Value = typeof this.isa1 === 'number' ? this.isa1 : parseFloat(this.isa1) || 0;
+  const isa2Value = typeof this.isa2 === 'number' ? this.isa2 : parseFloat(this.isa2) || 0;
+  const esaValue = typeof this.esa === 'number' ? this.esa : parseFloat(this.esa) || 0;
+  
+  this.total = isa1Value + isa2Value + esaValue;
+  this.marks = this.total; // Keep for backward compatibility
+  
+  // Calculate grade based on total
+  if (this.total >= 90) {
     this.grade = 'S';
-  } else if (this.marks >= 80) {
+  } else if (this.total >= 80) {
     this.grade = 'A';
-  } else if (this.marks >= 70) {
+  } else if (this.total >= 70) {
     this.grade = 'B';
-  } else if (this.marks >= 60) {
+  } else if (this.total >= 60) {
     this.grade = 'C';
-  } else if (this.marks >= 50) {
+  } else if (this.total >= 50) {
     this.grade = 'D';
   } else {
     this.grade = 'F';
