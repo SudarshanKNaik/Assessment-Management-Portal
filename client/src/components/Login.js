@@ -60,7 +60,7 @@ const Login = () => {
       <div className="login-welcome-panel">
         <div className="welcome-content">
           <div className="welcome-text-section">
-            <h1 className="welcome-heading">Welcome to the Internal Assessment Portal</h1>
+            <h1 className="welcome-heading">Internal Assessment Portal</h1>
             
             <div className="feature-cards">
               <div className="feature-card">

@@ -38,47 +38,50 @@ const seedData = async () => {
       console.log('Faculty user already exists');
     }
 
-    // Create Student Users
-    // USN Format: 2 digits (institution) + 2 letters (category) + 2 digits (year) + 3 letters (program) + 3 digits (ID)
-    // Example: 01AB20CSE001
-    const students = [
-      {
-        username: '01AB20CSE001',
-        email: 'student1@example.com',
-        password: 'password123',
-        role: 'student',
-        usn: '01AB20CSE001',
-        name: 'Alice Johnson',
-        department: 'CSE',
-        semester: '5',
-        division: 'C',
-        academicYear: '2020-2024'
-      },
-      {
-        username: '01AB20CSE002',
-        email: 'student2@example.com',
-        password: 'password123',
-        role: 'student',
-        usn: '01AB20CSE002',
-        name: 'Bob Williams',
-        department: 'CSE',
-        semester: '5',
-        division: 'C',
-        academicYear: '2020-2024'
-      },
-      {
-        username: '01AB20CSE003',
-        email: 'student3@example.com',
-        password: 'password123',
-        role: 'student',
-        usn: '01AB20CSE003',
-        name: 'Charlie Brown',
-        department: 'CSE',
-        semester: '5',
-        division: 'C',
-        academicYear: '2020-2024'
-      }
+
+    // Generate 60 dummy students for each semester and division
+    const indianFirstNames = [
+      'Aarav', 'Vivaan', 'Aditya', 'Vihaan', 'Arjun', 'Sai', 'Reyansh', 'Ayaan', 'Krishna', 'Ishaan',
+      'Ananya', 'Aadhya', 'Diya', 'Myra', 'Anika', 'Sara', 'Ira', 'Avni', 'Saanvi', 'Aarohi',
+      'Priya', 'Riya', 'Sneha', 'Pooja', 'Kavya', 'Meera', 'Nisha', 'Tanvi', 'Shreya', 'Aisha',
+      'Rahul', 'Rohan', 'Amit', 'Siddharth', 'Karan', 'Manish', 'Suresh', 'Vikas', 'Deepak', 'Akhil',
+      'Lakshmi', 'Divya', 'Shweta', 'Neha', 'Pallavi', 'Swati', 'Rashmi', 'Jyoti', 'Sunita', 'Preeti',
+      'Vivek', 'Sanjay', 'Ajay', 'Rajesh', 'Prakash', 'Dinesh', 'Mahesh', 'Gaurav', 'Harsh', 'Yash'
     ];
+    const indianLastNames = [
+      'Sharma', 'Verma', 'Patel', 'Reddy', 'Nair', 'Gupta', 'Mehta', 'Jain', 'Agarwal', 'Kumar',
+      'Singh', 'Chopra', 'Joshi', 'Das', 'Rao', 'Menon', 'Bose', 'Chatterjee', 'Banerjee', 'Mishra',
+      'Pandey', 'Tripathi', 'Dubey', 'Yadav', 'Saxena', 'Srivastava', 'Kapoor', 'Malhotra', 'Bhat', 'Shetty'
+    ];
+    const divisions = ['A', 'B', 'C'];
+    const totalSemesters = 8;
+    const students = [];
+    let studentCounter = 1;
+    for (let sem = 1; sem <= totalSemesters; sem++) {
+      for (const division of divisions) {
+        for (let i = 0; i < 60; i++) {
+          const firstName = indianFirstNames[(studentCounter + i) % indianFirstNames.length];
+          const lastName = indianLastNames[(studentCounter + i) % indianLastNames.length];
+          const name = `${firstName} ${lastName}`;
+          const usn = `01AB20CSE${String(studentCounter).padStart(3, '0')}`;
+          const username = usn;
+          const email = `student${studentCounter}@example.com`;
+          students.push({
+            username,
+            email,
+            password: 'password123',
+            role: 'student',
+            usn,
+            name,
+            department: 'CSE',
+            semester: String(sem),
+            division,
+            academicYear: '2020-2024'
+          });
+          studentCounter++;
+        }
+      }
+    }
 
     for (const studentData of students) {
       const studentExists = await User.findOne({ username: studentData.username });
@@ -91,28 +94,40 @@ const seedData = async () => {
       }
     }
 
-    // Create sample marks
-    // Format: ISA 1 (20) + ISA 2 (20) + ESA (60) = Total (100)
-    const sampleMarks = [
-      { studentId: '01AB20CSE001', usn: '01AB20CSE001', courseCode: '25ECSC301', courseName: 'Software Engineering', isa1: 18, isa2: 17, esa: 50, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE001', usn: '01AB20CSE001', courseCode: '24ECSP304', courseName: 'Web Technologies Lab', isa1: 20, isa2: 19, esa: 53, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE001', usn: '01AB20CSE001', courseCode: '24ECSC303', courseName: 'Computer Networks', isa1: 16, isa2: 15, esa: 47, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE002', usn: '01AB20CSE002', courseCode: '25ECSC301', courseName: 'Software Engineering', isa1: 15, isa2: 14, esa: 46, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE002', usn: '01AB20CSE002', courseCode: '24ECSP304', courseName: 'Web Technologies Lab', isa1: 17, isa2: 18, esa: 53, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE002', usn: '01AB20CSE002', courseCode: '24ECSC303', courseName: 'Computer Networks', isa1: 16, isa2: 16, esa: 50, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE003', usn: '01AB20CSE003', courseCode: '25ECSC301', courseName: 'Software Engineering', isa1: 19, isa2: 20, esa: 56, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE003', usn: '01AB20CSE003', courseCode: '24ECSP304', courseName: 'Web Technologies Lab', isa1: 18, isa2: 19, esa: 53, semester: '5', division: 'C', department: 'CSE' },
-      { studentId: '01AB20CSE003', usn: '01AB20CSE003', courseCode: '24ECSC303', courseName: 'Computer Networks', isa1: 17, isa2: 18, esa: 52, semester: '5', division: 'C', department: 'CSE' },
+
+    // Add marks for all dummy students
+    const courseList = [
+      { code: '25ECSC301', name: 'Software Engineering' },
+      { code: '24ECSP304', name: 'Web Technologies Lab' },
+      { code: '24ECSC303', name: 'Computer Networks' }
     ];
 
-    for (const markData of sampleMarks) {
-      const markExists = await Marks.findOne({ studentId: markData.studentId, courseCode: markData.courseCode });
-      if (!markExists) {
-        const mark = new Marks(markData);
-        await mark.save();
-        console.log(`Marks created for ${markData.studentId} - ${markData.courseCode}`);
-      } else {
-        console.log(`Marks for ${markData.studentId} - ${markData.courseCode} already exist`);
+    for (const studentData of students) {
+      for (const course of courseList) {
+        // Generate random marks for each student and course
+        const isa1 = Math.floor(Math.random() * 21); // 0-20
+        const isa2 = Math.floor(Math.random() * 21); // 0-20
+        const esa = Math.floor(Math.random() * 61);  // 0-60
+        const markData = {
+          studentId: studentData.username,
+          usn: studentData.usn,
+          courseCode: course.code,
+          courseName: course.name,
+          isa1,
+          isa2,
+          esa,
+          semester: studentData.semester,
+          division: studentData.division,
+          department: studentData.department
+        };
+        const markExists = await Marks.findOne({ studentId: markData.studentId, courseCode: markData.courseCode });
+        if (!markExists) {
+          const mark = new Marks(markData);
+          await mark.save();
+          console.log(`Marks created for ${markData.studentId} - ${markData.courseCode}`);
+        } else {
+          console.log(`Marks for ${markData.studentId} - ${markData.courseCode} already exist`);
+        }
       }
     }
 
