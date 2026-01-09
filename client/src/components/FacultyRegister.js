@@ -11,7 +11,8 @@ const FacultyRegister = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    department: ''
+    department: '',
+    subject: ''
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -65,6 +66,9 @@ const FacultyRegister = () => {
       newErrors.department = 'Department is required';
     }
 
+    if (!formData.subject.trim()) {
+      newErrors.subject = 'Subject to teach is required';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -83,7 +87,8 @@ const FacultyRegister = () => {
         ...registerData,
         role: 'faculty',
         facultyId: formData.facultyId.toUpperCase().trim(), // Ensure Faculty ID is uppercase
-        username: formData.facultyId.toUpperCase().trim() // Use facultyId as username
+        username: formData.facultyId.toUpperCase().trim(), // Use facultyId as username
+        subject: formData.subject.trim()
       };
 
       await axios.post('/api/auth/register', payload);
@@ -217,7 +222,25 @@ const FacultyRegister = () => {
               className={errors.department ? 'error' : ''}
               placeholder="Enter your department"
             />
+
             {errors.department && <span className="error-message">{errors.department}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="subject">Subject to Teach</label>
+            <select
+              id="subject"
+              name="subject"
+              value={formData.subject}
+              onChange={handleChange}
+              className={errors.subject ? 'error' : ''}
+            >
+              <option value="">Select a subject</option>
+              <option value="Software Engineering">Software Engineering</option>
+              <option value="Web Technologies Lab">Web Technologies Lab</option>
+              <option value="Computer Networks">Computer Networks</option>
+            </select>
+            {errors.subject && <span className="error-message">{errors.subject}</span>}
           </div>
 
           {errors.submit && <div className="error-message submit-error">{errors.submit}</div>}

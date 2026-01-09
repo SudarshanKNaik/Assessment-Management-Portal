@@ -87,13 +87,13 @@ marksSchema.pre('save', function(next) {
   // Calculate total: ISA 1 (20) + ISA 2 (20) + ESA (60) = 100
   // Handle undefined, null, or empty values
   const isa1Value = (this.isa1 !== undefined && this.isa1 !== null) 
-    ? (typeof this.isa1 === 'number' ? this.isa1 : parseFloat(this.isa1) || 0)
+    ? (typeof this.isa1 === 'number' ? this.isa1 : parseInt(this.isa1) || 0)
     : 0;
   const isa2Value = (this.isa2 !== undefined && this.isa2 !== null)
-    ? (typeof this.isa2 === 'number' ? this.isa2 : parseFloat(this.isa2) || 0)
+    ? (typeof this.isa2 === 'number' ? this.isa2 : parseInt(this.isa2) || 0)
     : 0;
   const esaValue = (this.esa !== undefined && this.esa !== null)
-    ? (typeof this.esa === 'number' ? this.esa : parseFloat(this.esa) || 0)
+    ? (typeof this.esa === 'number' ? this.esa : parseInt(this.esa) || 0)
     : 0;
   
   this.total = isa1Value + isa2Value + esaValue;

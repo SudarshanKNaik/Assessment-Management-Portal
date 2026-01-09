@@ -296,12 +296,11 @@ const FacultyDashboard = () => {
                           <span className="stat-value">{stats.totalStudents}</span>
                         </div>
                         <div className="stat-item">
-                          <span className="stat-label">Students with Marks:</span>
-                          <span className="stat-value">{stats.studentsWithMarks || 0}</span>
-                        </div>
-                        <div className="stat-item">
                           <span className="stat-label">Class Average:</span>
                           <span className="stat-value">{stats.average > 0 ? `${stats.average.toFixed(2)}%` : 'N/A'}</span>
+                        </div>
+                        <div style={{marginTop: '1.5rem', marginBottom: '0.5rem'}}>
+                          <h3 style={{fontWeight: 600, color: '#4a9c8c'}}>Grade Distribution</h3>
                         </div>
                         <div className="grade-distribution">
                           <div className="grade-item">
