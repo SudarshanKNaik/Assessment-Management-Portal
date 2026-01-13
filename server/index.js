@@ -17,7 +17,7 @@ app.use('/api/students', require('./routes/students'));
 
 // MongoDB Connection
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/internal-assessment';
+const MONGODB_URI = process.env.MONGO_URI || 'mongodb://host.docker.internal:27017/structured_enquiry';
 
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,

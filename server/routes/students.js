@@ -12,11 +12,18 @@ router.get('/by-division-semester', auth, isFaculty, async (req, res) => {
       return res.status(400).json({ message: 'Division and Semester are required' });
     }
     
+    // Pagination
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 50;
     const students = await User.find({
       role: 'student',
       division,
       semester
-    }).select('usn name email department division semester academicYear').sort({ usn: 1 });
+    }).select('usn name email department division semester academicYear')
+      .sort({ usn: 1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
     
     res.json(students);
   } catch (error) {

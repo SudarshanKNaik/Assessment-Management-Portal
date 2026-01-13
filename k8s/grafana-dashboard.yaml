@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-k8s
+  namespace: monitoring
+data:
+  kubernetes-dashboard.json: |
+    {
+      "dashboard": {
+        "title": "Kubernetes Pod Monitoring",
+        "panels": [
+          {
+            "id": 1,
+            "title": "CPU Usage by Pod",
+            "type": "timeseries",
+            "targets": [
+              {
+                "expr": "rate(container_cpu_usage_seconds_total{container!=\"\"}[1m])",
+                "legendFormat": "{{pod}}"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+          },
+          {
+            "id": 2,
+            "title": "Memory Usage by Pod",
+            "type": "timeseries",
+            "targets": [
+              {
+                "expr": "container_memory_usage_bytes{container!=\"\"}",
+                "legendFormat": "{{pod}}"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+          },
+          {
+            "id": 3,
+            "title": "Backend Pod Count",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "count(container_memory_usage_bytes{pod=~\"backend.*\", container!=\"\"})"
+              }
+            ],
+            "gridPos": {"h": 4, "w": 6, "x": 0, "y": 8}
+          },
+          {
+            "id": 4,
+            "title": "Backend CPU %",
+            "type": "timeseries",
+            "targets": [
+              {
+                "expr": "rate(container_cpu_usage_seconds_total{pod=~\"backend.*\", container!=\"\"}[1m]) * 100",
+                "legendFormat": "{{pod}}"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12}
+          }
+        ],
+        "refresh": "5s",
+        "time": {"from": "now-5m", "to": "now"}
+      }
+    }

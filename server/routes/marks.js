@@ -18,7 +18,14 @@ router.get('/all', auth, isFaculty, async (req, res) => {
       semester
     };
     
-    const marks = await Marks.find(query).sort({ usn: 1 });
+    // Pagination
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 50;
+    const marks = await Marks.find(query)
+      .sort({ usn: 1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
     res.json(marks);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -28,7 +35,7 @@ router.get('/all', auth, isFaculty, async (req, res) => {
 // Get student's own marks
 router.get('/my-marks', auth, isStudent, async (req, res) => {
   try {
-    const marks = await Marks.find({ usn: req.user.usn });
+    const marks = await Marks.find({ usn: req.user.usn }).lean();
     res.json(marks);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -95,7 +102,7 @@ router.post('/upload', auth, isFaculty, async (req, res) => {
     }
 
     // Find or create marks
-    const existingMarks = await Marks.findOne({ usn, courseCode, semester, division });
+    const existingMarks = await Marks.findOne({ usn, courseCode, semester, division }).lean();
 
     if (existingMarks) {
       // Update existing marks - only update fields that are provided

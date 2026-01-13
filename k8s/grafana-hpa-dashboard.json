@@ -1,0 +1,279 @@
+{
+    "dashboard": {
+        "title": "HPA Scaling Monitor",
+        "tags": [
+            "kubernetes",
+            "hpa",
+            "autoscaling"
+        ],
+        "timezone": "browser",
+        "refresh": "5s",
+        "time": {
+            "from": "now-15m",
+            "to": "now"
+        },
+        "panels": [
+            {
+                "id": 1,
+                "title": "Current Replicas",
+                "type": "stat",
+                "gridPos": {
+                    "h": 4,
+                    "w": 6,
+                    "x": 0,
+                    "y": 0
+                },
+                "targets": [
+                    {
+                        "expr": "count(container_memory_usage_bytes{pod=~\"backend.*\", container!=\"\"})",
+                        "refId": "A"
+                    }
+                ],
+                "options": {
+                    "colorMode": "value",
+                    "graphMode": "area",
+                    "textMode": "value_and_name"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "unit": "short",
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "value": 0,
+                                    "color": "green"
+                                },
+                                {
+                                    "value": 5,
+                                    "color": "yellow"
+                                },
+                                {
+                                    "value": 8,
+                                    "color": "red"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "id": 2,
+                "title": "CPU Utilization (%)",
+                "type": "gauge",
+                "gridPos": {
+                    "h": 4,
+                    "w": 6,
+                    "x": 6,
+                    "y": 0
+                },
+                "targets": [
+                    {
+                        "expr": "avg(rate(container_cpu_usage_seconds_total{pod=~\"backend.*\", container!=\"\"}[1m])) * 100",
+                        "refId": "A"
+                    }
+                ],
+                "options": {
+                    "showThresholdLabels": true,
+                    "showThresholdMarkers": true
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "unit": "percent",
+                        "min": 0,
+                        "max": 100,
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "value": 0,
+                                    "color": "green"
+                                },
+                                {
+                                    "value": 50,
+                                    "color": "yellow"
+                                },
+                                {
+                                    "value": 80,
+                                    "color": "red"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "id": 3,
+                "title": "Min Replicas",
+                "type": "stat",
+                "gridPos": {
+                    "h": 4,
+                    "w": 3,
+                    "x": 12,
+                    "y": 0
+                },
+                "targets": [
+                    {
+                        "expr": "2",
+                        "refId": "A"
+                    }
+                ],
+                "options": {
+                    "colorMode": "background",
+                    "textMode": "value"
+                }
+            },
+            {
+                "id": 4,
+                "title": "Max Replicas",
+                "type": "stat",
+                "gridPos": {
+                    "h": 4,
+                    "w": 3,
+                    "x": 15,
+                    "y": 0
+                },
+                "targets": [
+                    {
+                        "expr": "10",
+                        "refId": "A"
+                    }
+                ],
+                "options": {
+                    "colorMode": "background",
+                    "textMode": "value"
+                }
+            },
+            {
+                "id": 5,
+                "title": "CPU Usage Over Time",
+                "type": "timeseries",
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 4
+                },
+                "targets": [
+                    {
+                        "expr": "rate(container_cpu_usage_seconds_total{pod=~\"backend.*\", container!=\"\"}[1m]) * 100",
+                        "legendFormat": "{{pod}}",
+                        "refId": "A"
+                    }
+                ],
+                "fieldConfig": {
+                    "defaults": {
+                        "unit": "percent",
+                        "custom": {
+                            "drawStyle": "line",
+                            "lineWidth": 2,
+                            "fillOpacity": 10
+                        }
+                    }
+                }
+            },
+            {
+                "id": 6,
+                "title": "Replica Count Over Time",
+                "type": "timeseries",
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 12,
+                    "y": 4
+                },
+                "targets": [
+                    {
+                        "expr": "count(container_memory_usage_bytes{pod=~\"backend.*\", container!=\"\"})",
+                        "legendFormat": "Backend Replicas",
+                        "refId": "A"
+                    }
+                ],
+                "fieldConfig": {
+                    "defaults": {
+                        "unit": "short",
+                        "custom": {
+                            "drawStyle": "line",
+                            "lineWidth": 3,
+                            "fillOpacity": 20,
+                            "lineInterpolation": "stepAfter"
+                        }
+                    }
+                }
+            },
+            {
+                "id": 7,
+                "title": "Memory Usage by Pod",
+                "type": "timeseries",
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 12
+                },
+                "targets": [
+                    {
+                        "expr": "container_memory_usage_bytes{pod=~\"backend.*\", container!=\"\"} / 1024 / 1024",
+                        "legendFormat": "{{pod}}",
+                        "refId": "A"
+                    }
+                ],
+                "fieldConfig": {
+                    "defaults": {
+                        "unit": "decmbytes",
+                        "custom": {
+                            "drawStyle": "line",
+                            "lineWidth": 2,
+                            "fillOpacity": 10
+                        }
+                    }
+                }
+            },
+            {
+                "id": 8,
+                "title": "HPA Target CPU (%)",
+                "type": "stat",
+                "gridPos": {
+                    "h": 4,
+                    "w": 6,
+                    "x": 12,
+                    "y": 12
+                },
+                "targets": [
+                    {
+                        "expr": "50",
+                        "refId": "A"
+                    }
+                ],
+                "options": {
+                    "colorMode": "background",
+                    "graphMode": "none",
+                    "textMode": "value"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "unit": "percent"
+                    }
+                }
+            },
+            {
+                "id": 9,
+                "title": "Scaling Events",
+                "type": "table",
+                "gridPos": {
+                    "h": 4,
+                    "w": 6,
+                    "x": 18,
+                    "y": 12
+                },
+                "targets": [
+                    {
+                        "expr": "changes(count(container_memory_usage_bytes{pod=~\"backend.*\", container!=\"\"})[5m:])",
+                        "refId": "A",
+                        "format": "table"
+                    }
+                ]
+            }
+        ]
+    }
+}
